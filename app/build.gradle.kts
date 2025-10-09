@@ -16,6 +16,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // ✅ Securely load API Key from local.properties
+        val apiKey: String = project.findProperty("MAPS_API_KEY") as String? ?: ""
+        buildConfigField("String", "MAPS_API_KEY", "\"$apiKey\"")
+        resValue("string", "google_maps_key", apiKey)
     }
 
     buildTypes {
@@ -27,31 +32,37 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         viewBinding = true
+        buildConfig = true // ✅ Add this line
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
+
+    // ✅ Google Maps dependencies
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.fragment.ktx)
-    implementation("com.google.android.gms:play-services-maps:18.1.0")
-    implementation("com.google.android.gms:play-services-location:21.3.0")
 }
